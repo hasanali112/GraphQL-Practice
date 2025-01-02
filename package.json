@@ -1,0 +1,17 @@
+{
+  "name": "hello-graphql",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "compile": "tsc -w",
+    "start": "nodemon ./dist/index.js"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.11.2",
+    "@types/node": "^22.10.3",
+    "graphql": "^16.10.0",
+    "nodemon": "^3.1.9"
+  }
+}
