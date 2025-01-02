@@ -23,7 +23,10 @@ const typeDefs = `#graphql
 const resolvers = {
     Query: {
         products: () => db.products,
-        product: () => db.products,
+        product: (parent, args, context) => {
+            const result = db.products.find((item) => item.id === args.productId);
+            return result;
+        },
     },
 };
 const server = new ApolloServer({

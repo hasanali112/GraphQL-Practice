@@ -41,3 +41,66 @@ type User {
   age: Int
 }
 ```
+
+### Resolver
+
+**Resolver Function** GraphQL-এর একটি মূল উপাদান যা ডেটার জন্য লজিক পরিচালনা করে। এটি টাইপ ডেফিনিশনে ঘোষিত ফিল্ডগুলোর ডেটা সরবরাহ করার কাজ করে। Resolver ফাংশনে তিনটি প্রধান প্যারামিটার থাকে: `parent`, `args`, এবং `context`। নিচে এই তিনটি প্যারামিটার সম্পর্কে বিশদভাবে আলোচনা করা হলো:
+
+### **1. Parent (অথবা Root):**
+
+- **Parent** আগের লেভেলের রেজলভারের আউটপুট ধরে রাখে। এটি তখনই গুরুত্বপূর্ণ যখন কোনো টাইপের ফিল্ড অন্য একটি অবজেক্ট টাইপের মধ্যে থাকে।
+
+উদাহরণস্বরূপ:
+
+```ts
+type Query {
+  user(id: ID!): User
+}
+
+type User {
+  id: ID!
+  name: String!
+  posts: [Post!]!
+}
+
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+}
+
+```
+
+এখানে, `User` এর `posts` ফিল্ড রিজলভ করতে গেলে `parent` হিসেবে `User` অবজেক্ট পাবে।
+
+```ts
+const resolvers = {
+  Query: {
+    user: (parent, args, context) => {
+      return users.find((user) => user.id === args.id);
+    },
+  },
+  User: {
+    posts: (parent, args, context) => {
+      return posts.filter((post) => post.userId === parent.id);
+    },
+  },
+};
+```
+
+2. Args (Arguments):
+
+**Args** ক্লায়েন্টের রিকোয়েস্ট থেকে পাঠানো প্যারামিটার বা ইনপুট ডেটা থাকে।
+
+```ts
+type Query {
+  user(id: ID!): User
+}
+
+```
+
+এখানে, `id` হচ্ছে `args`।
+
+### **3. Context:**
+
+- **Context** একটি শেয়ার করা অবজেক্ট যা প্রতিটি রিজলভারে পাওয়া যায়। এটি সাধারণত অথেন্টিকেশন, অথরাইজেশন, অথবা শেয়ার করা ডেটা (যেমন, ডেটাবেস কানেকশন) সংরক্ষণ করতে ব্যবহৃত হয়।
